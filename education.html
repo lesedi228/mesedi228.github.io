@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(76, 209, 14);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation bar */
+        nav {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #0ee20e; /* Lighter peach color on hover */
+        }
+
+        /* Container layout */
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 20px;
+            gap: 40px;
+        }
+
+        /* Form container */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        /* EducationEntry List styling */
+        .education-list {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+
+        .education-box {
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .education-box img {
+            width: 100%;
+            height: auto;
+            max-height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .education-box h4 {
+            margin: 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .education-box p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .education-box .dates {
+            margin: 5px 0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .education-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .education-actions button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            color: red;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .education-actions button.edit {
+            color: blue;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .education-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="personal-info.html">Personal Info</a></li>
+            <li><a href="skills.html">Skills</a></li>
+            <li><a href="work-experience.html">Work Experience</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="form-container">
+        <center><p><font size="6%">I attended seripe Primary School from 2010 to 2018.</p>
+            <p>I went to attend high school at Mabotha Secondary from 2019 to 2023 in a region called Zebediela in the Limpopo province, South Africa.</p>
+            <p>I went to the University of Limpopo to further my studies.</p>
+            <p>Expected graduation, 2027.</p></font>
+        </center> 
+    </div>
+
+    <div class="education-list" id="educationList">
+        <!-- Entries will be added here -->
+    </div>
+</div>
+
+<script>
+    // Use the current page path as a unique key for storing data in localStorage
+    const pageKey = window.location.pathname;
+
+    // Load entries from localStorage for the current page
+    window.onload = function () {
+        loadEntries();
+    };
+
+    // Add new education event
+    document.getElementById('educationForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        let name = document.getElementById('name').value;
+        let description = document.getElementById('description').value;
+        let logoUrl = document.getElementById('logoUrl').value;
+        let startDate = document.getElementById('startDate').value;
+        let endDate = document.getElementById('endDate').value;
+
+        // Get entries from localStorage for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+
+        // Create a new education object
+        let newEducationEntry = {
+            id: Date.now(), // unique ID based on timestamp
+            name: name,
+            description: description,
+            logoUrl: logoUrl,
+            startDate: startDate,
+            endDate: endDate
+        };
+
+        // Add the new education to the array
+        entries.push(newEducationEntry);
+
+        // Save the array back to localStorage with the page-specific key
+        localStorage.setItem(pageKey, JSON.stringify(entries));
+
+        // Refresh the displayed entries
+        loadEntries();
+
+        // Clear the form
+        document.getElementById('educationForm').reset();
+    });
+
+    // Load and display entries from localStorage for the current page
+    function loadEntries() {
+        // Get entries for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+
+        let educationList = document.getElementById('educationList');
+        educationList.innerHTML = ''; // Clear the current list
+
+        // Add each education as a box on the right
+        entries.forEach(education => {
+            let educationBox = document.createElement('div');
+            educationBox.classList.add('education-box');
+
+            // Check if a logo URL exists and display the image
+            let logoHtml = education.logoUrl ? `<img src="${education.logoUrl}" alt="Logo">` : '';
+
+            // Check if end date exists
+            let endDateText = education.endDate ? ` - ${education.endDate}` : '';
+
+            educationBox.innerHTML = `
+                ${logoHtml}
+                <h4>${education.name}</h4>
+                <p>${education.description}</p>
+                <p class="dates">${education.startDate}${endDateText}</p>
+                <div class="education-actions">
+                    <button class="delete" onclick="deleteEducationEntry(${education.id})">Delete</button>
+                    <button class="edit" onclick="editEducationEntry(${education.id})">Edit</button>
+                </div>
+            `;
+
+            educationList.appendChild(educationBox);
+        });
+    }
+
+    // Delete an education
+    function deleteEducationEntry(id) {
+        // Get entries for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+        let updatedEntries = entries.filter(education => education.id !== id);
+        localStorage.setItem(pageKey, JSON.stringify(updatedEntries));
+        loadEntries();
+    }
+
+    // Edit an education
+    function editEducationEntry(id) {
+        // Get entries for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+        let educationToEdit = entries.find(education => education.id === id);
+
+        if (educationToEdit) {
+            document.getElementById('name').value = educationToEdit.name;
+            document.getElementById('description').value = educationToEdit.description;
+            document.getElementById('logoUrl').value = educationToEdit.logoUrl;
+            document.getElementById('startDate').value = educationToEdit.startDate;
+            document.getElementById('endDate').value = educationToEdit.endDate;
+
+            deleteEducationEntry(id); // Remove the old education so the updated one can be saved
+        }
+    }
+</script>
+
+
+</body>
+</html>

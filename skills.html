@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD with Page-Specific Storage</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(14, 224, 31);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation bar */
+        nav {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #24d80c; /* Lighter peach color on hover */
+        }
+
+        /* Container layout */
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 20px;
+            gap: 40px;
+        }
+
+        /* Form container */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        /* Entry List styling */
+        .entry-list {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+
+        .entry-box {
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .entry-box img {
+            width: 100%;
+            height: auto;
+            max-height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .entry-box h4 {
+            margin: 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .entry-box p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .entry-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .entry-actions button {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            color: red;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .entry-actions button.edit {
+            color: blue;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .entry-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="personal-info.html">Personal Info</a></li>
+            <li><a href="education.html">Education</a></li>
+            <li><a href="work-experience.html">Work Experience</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="form-container">
+        <center><ul>
+            <h1>HTML</h1>
+            <p>-The language that is fundemental in creating a website,it is a building block in web development.</p>
+            <br>
+            <h1>CSS</h1>
+            <p>-A language that helps style a website.</p>
+            <br>
+            <h1>JavaScript</h1>
+            <p>-A language that adds functionality to a website.</p>
+            <br>
+            <h1>C++</h1>
+            <p>-One of the world's most popular programming languages. C++ can be found in today's operating systems, Graphical User Interfaces, and embedded systems.</p>
+     </center>
+    </div>
+
+    <div class="entry-list" id="entryList">
+        <!-- Entries will be added here -->
+    </div>
+</div>
+
+<script>
+    // Use the current page path as a unique key for storing data in localStorage
+    const pageKey = window.location.pathname;
+
+    // Load entries from localStorage for the current page
+    window.onload = function () {
+        loadEntries();
+    };
+
+    // Add new entry event
+    document.getElementById('entryForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        let name = document.getElementById('name').value;
+        let description = document.getElementById('description').value;
+        let logoUrl = document.getElementById('logoUrl').value;
+
+        // Get entries from localStorage for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+
+        // Create a new entry object
+        let newEntry = {
+            id: Date.now(), // unique ID based on timestamp
+            name: name,
+            description: description,
+            logoUrl: logoUrl
+        };
+
+        // Add the new entry to the array
+        entries.push(newEntry);
+
+        // Save the array back to localStorage with the page-specific key
+        localStorage.setItem(pageKey, JSON.stringify(entries));
+
+        // Refresh the displayed entries
+        loadEntries();
+
+        // Clear the form
+        document.getElementById('entryForm').reset();
+    });
+
+    // Load and display entries from localStorage for the current page
+    function loadEntries() {
+        // Get entries for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+
+        let entryList = document.getElementById('entryList');
+        entryList.innerHTML = ''; // Clear the current list
+
+        // Add each entry as a box on the right
+        entries.forEach(entry => {
+            let entryBox = document.createElement('div');
+            entryBox.classList.add('entry-box');
+
+            // Check if a logo URL exists and display the image
+            let logoHtml = entry.logoUrl ? `<img src="${entry.logoUrl}" alt="Logo">` : '';
+
+            entryBox.innerHTML = `
+                ${logoHtml}
+                <h4>${entry.name}</h4>
+                <p>${entry.description}</p>
+                <div class="entry-actions">
+                    <button class="delete" onclick="deleteEntry(${entry.id})">Delete</button>
+                    <button class="edit" onclick="editEntry(${entry.id})">Edit</button>
+                </div>
+            `;
+
+            entryList.appendChild(entryBox);
+        });
+    }
+
+    // Delete an entry
+    function deleteEntry(id) {
+        // Get entries for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+        let updatedEntries = entries.filter(entry => entry.id !== id);
+        localStorage.setItem(pageKey, JSON.stringify(updatedEntries));
+        loadEntries();
+    }
+
+    // Edit an entry
+    function editEntry(id) {
+        // Get entries for the current page
+        let entries = JSON.parse(localStorage.getItem(pageKey)) || [];
+        let entryToEdit = entries.find(entry => entry.id === id);
+
+        if (entryToEdit) {
+            document.getElementById('name').value = entryToEdit.name;
+            document.getElementById('description').value = entryToEdit.description;
+            document.getElementById('logoUrl').value = entryToEdit.logoUrl;
+
+            deleteEntry(id); // Remove the old entry so the updated one can be saved
+        }
+    }
+</script>
+
+</body>
+</html>

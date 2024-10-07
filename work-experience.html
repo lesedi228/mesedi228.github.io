@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Experience</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body bgcolor="lightgreen">
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="personal-info.html">Personal Info</a></li>
+                <li><a href="education.html">Education</a></li>
+                <li><a href="skills.html">Skills</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <form action="add_work_experience.php" method="post">
+            <h2>Add Work Experience</h2>
+            <label for="job_title">Job Title:</label>
+            <input type="text" id="job_title" name="job_title"><br><br>
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company"><br><br>
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date"><br><br>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date"><br><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea><br><br>
+            <input type="submit" value="Add Work Experience">
+          </form>
+    </main>
+    <footer>
+        <p>&copy; Made by MAAKE L 2024</p>
+    </footer>
+</body>
+</html>
